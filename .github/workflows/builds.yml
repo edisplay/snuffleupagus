@@ -26,4 +26,4 @@ jobs:
       - name: Show logs in case of failure
         if: ${{ failure() }}
         run: |
-          grep -r . tests/*.log tests/*/*.log
+          grep -r . `ls ./src/tests/*.log ./src/tests/*/*.log`
