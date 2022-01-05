@@ -15,15 +15,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Install pecl
+      - name: PHP 7 env setup
         if: startsWith(matrix.container, 'php:7')
-        run: pecl install vld-beta
-      - name: Remove php8 tests on php7
-        if: startsWith(matrix.container, 'php:7')
-        run: rm -rf src/tests/*php8*/
+        run: |
+          pecl install vld-beta
+          rm -rf src/tests/*php8*/ src/tests/*/*_php8.phpt
       - name: Build and run the testsuite
-        run: make tests
+        run: |
+          make release
+          ln -s $(php -r 'echo ini_get("extension_dir");')/* src/modules/
+          make tests
       - name: Show logs in case of failure
         if: ${{ failure() }}
         run: |
-          grep -r . `ls ./src/tests/*.log ./src/tests/*/*.log`
+          grep -r . --include='*.log' src/tests
