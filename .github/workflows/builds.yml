@@ -11,9 +11,6 @@ jobs:
             - php:8.0
             - php:7.4
             - php:7.3
-            - php:7.2
-            # - php:7.1
-            # - php:7.0
     container: ${{ matrix.container }}
     steps:
       - name: Checkout code
@@ -29,5 +26,4 @@ jobs:
       - name: Show logs in case of failure
         if: ${{ failure() }}
         run: |
-          grep -r . ./src/tests/*/*.out
-          grep -r . ./src/tests/*/*.diff
+          grep -r . tests/*.log tests/*/*.log
