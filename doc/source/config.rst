@@ -112,6 +112,16 @@ You may set a configuration variable using the ``set`` keyword (or ``@set``) and
   @set CMD "ls"
   sp.disable_function.function("system").pos("0").value(CMD).allow();
 
+logging/warning/error messages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It is possible to emit log messages or warning/error messages using the keywords ``@log/@info``, ``@warn/@warning`` and ``@err/@error``. By emitting an error message, a PHP error is generated, thereby failing module startup.
+
+::
+  @condition PHP_VERSION_ID < 80000;
+  @error "This configuration is for PHP 8 only!";
+  @end_condition;
+
 global
 ^^^^^^
 
