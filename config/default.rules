@@ -52,12 +52,26 @@ sp.disable_function.function("putenv").param("setting").value_r("GCONV_").drop()
 sp.disable_function.function("extract").pos("0").value_r("^_").drop()
 sp.disable_function.function("extract").pos("1").value("0").drop()
 
+# Enable INI protection - see also ini_protection.rules
+sp.ini_protection.enable();
+
 # This is also burned:
 # ini_set('open_basedir','..');chdir('..');…;chdir('..');ini_set('open_basedir','/');echo(file_get_contents('/etc/passwd'));
 # Since we have no way of matching on two parameters at the same time, we're
 # blocking calls to open_basedir altogether: nobody is using it via ini_set anyway.
 # Moreover, there are non-public bypasses that are also using this vector ;)
-sp.disable_function.function("ini_set").param("varname").value_r("open_basedir").drop()
+sp.ini.key("open_basedir").drop();
+
+# Prevent runtime modification of interesting things
+sp.ini.key("assert.active").ro();
+sp.ini.key("zend.assertions").ro();
+sp.ini.key("memory_limit").ro();
+sp.ini.key("include_path").ro();
+
+# Logging lockdown
+sp.ini.key("error_log").ro();
+sp.ini.key("error_reporting").ro();
+sp.ini.key("display_errors").ro();
 
 # Prevent various `include`-related vulnerabilities
 sp.disable_function.function("require_once").value_r("\.(inc|phtml|php)$").allow();
@@ -74,13 +88,6 @@ sp.disable_function.function("system").param("command").value_r("[$|;&`\\n\\(\\)
 sp.disable_function.function("shell_exec").pos("0").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
 sp.disable_function.function("exec").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
 sp.disable_function.function("proc_open").param("command").value_r("[$|;&`\\n\\(\\)\\\\]").drop();
-
-# Prevent runtime modification of interesting things
-sp.disable_function.function("ini_set").param("varname").value("assert.active").drop();
-sp.disable_function.function("ini_set").param("varname").value("zend.assertions").drop();
-sp.disable_function.function("ini_set").param("varname").value("memory_limit").drop();
-sp.disable_function.function("ini_set").param("varname").value("include_path").drop();
-sp.disable_function.function("ini_set").param("varname").value("open_basedir").drop();
 
 # Detect some backdoors via environment recon
 sp.disable_function.function("ini_get").param("varname").value("allow_url_fopen").drop();
@@ -114,11 +121,6 @@ sp.disable_function.function("curl_setopt").param("option").value("81").drop().a
 # File upload
 sp.disable_function.function("move_uploaded_file").param("destination").value_r("\\.ph").drop();
 sp.disable_function.function("move_uploaded_file").param("destination").value_r("\\.ht").drop();
-
-# Logging lockdown
-sp.disable_function.function("ini_set").param("varname").value_r("error_log").drop()
-sp.disable_function.function("ini_set").param("varname").value_r("error_reporting").drop()
-sp.disable_function.function("ini_set").param("varname").value_r("display_errors").drop()
 
 # detect unwanted/dangerous extensions on startup
 @condition extension_loaded("xdebug");
