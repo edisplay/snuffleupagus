@@ -539,6 +539,16 @@ static PHP_INI_MH(OnUpdateConfiguration) {
     }
 
     for (size_t i = 0; globbuf.gl_pathv[i]; i++) {
+      if ((!sapi_module.name || strcmp(sapi_module.name, "cli") != 0) && getenv("SP_SKIP_CFG_WRITABLE_CHECK") == NULL) {
+          if (0 == access(globbuf.gl_pathv[i], W_OK)) {
+            sp_log_msg("config", SP_LOG_INFO, "Config file is writable by PHP process. A vulnerable PHP script can disable all Snuffleupagus protections. (%s)", globbuf.gl_pathv[i]);
+          } else {
+            struct stat buf;
+            if (stat(globbuf.gl_pathv[i], &buf) == 0 && buf.st_uid == geteuid()) {
+             sp_log_msg("config", SP_LOG_INFO, "Config file is owned by PHP process. A vulnerable PHP script can disable all Snuffleupagus protections. (%s)", globbuf.gl_pathv[i]);
+            }
+          }
+      }
       if (sp_parse_config(globbuf.gl_pathv[i]) != SUCCESS) {
         SPG(is_config_valid) = SP_CONFIG_INVALID;
         globfree(&globbuf);

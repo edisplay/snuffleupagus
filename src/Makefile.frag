@@ -8,4 +8,4 @@ $(srcdir)/sp_config_scanner.c: $(srcdir)/sp_config_scanner.re
 
 .PHONY: tests
 tests:
-	$(MAKE) test NO_INTERACTION=1 SP_NODEBUG=1 SP_SKIP_OLD_PHP_CHECK=1 $(TESTS)
+	$(MAKE) test NO_INTERACTION=1 SP_NODEBUG=1 SP_SKIP_OLD_PHP_CHECK=1 SP_SKIP_CFG_WRITABLE_CHECK=1 $(TESTS)

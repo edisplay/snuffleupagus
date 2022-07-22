@@ -37,7 +37,7 @@ linked-clone:
 	@echo -e "==> DONE. <==\nCompile a debug build with\n  make compile_debug SRC=src-$(CLONE)"
 
 tests: release  ## compile a release build and run the testsuite
-	TEST_PHP_ARGS='-q' REPORT_EXIT_STATUS=1 SP_SKIP_OLD_PHP_CHECK=1 make -C $(SRC) test
+	TEST_PHP_ARGS='-q' REPORT_EXIT_STATUS=1 SP_SKIP_OLD_PHP_CHECK=1 SP_SKIP_CFG_WRITABLE_CHECK=1 make -C $(SRC) test
 
 coverage:  ## compile snuffleugpaus, and run the testsuite with coverage
 	cd $(SRC); phpize
