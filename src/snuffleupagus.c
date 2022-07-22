@@ -385,6 +385,7 @@ static void dump_config() {
 
   add_assoc_bool(&arr, SP_TOKEN_AUTO_COOKIE_SECURE, SPCFG(auto_cookie_secure));
   add_assoc_bool(&arr, SP_TOKEN_XXE_PROTECTION, SPCFG(xxe_protection));
+  add_assoc_bool(&arr, SP_TOKEN_SEC_FETCH_CHECK, SPCFG(sec_fetch_check));
 
   add_assoc_bool(&arr, SP_TOKEN_EVAL_BLACKLIST "." SP_TOKEN_SIM, SPCFG(eval).simulation);
   ADD_ASSOC_ZSTR(&arr, SP_TOKEN_EVAL_BLACKLIST "." SP_TOKEN_DUMP, SPCFG(eval).dump);
