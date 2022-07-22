@@ -57,12 +57,38 @@ static bool /* success */ sp_ini_check(zend_string *const restrict varname, zend
   // we have a new_value.
 
   if (entry->min || entry->max) {
+#if PHP_VERSION_ID >= 80200
+    zend_string *errstr = NULL;
+    zend_long lvalue = zend_ini_parse_quantity((zend_string*)new_value, &errstr);
+    if (errstr) { goto parse_error; }
+    zend_long min, max;
+    if (entry->min) {
+      min = zend_ini_parse_quantity(entry->min, &errstr);
+      if (errstr) { goto parse_error; }
+    }
+    if (entry->max) {
+      max = zend_ini_parse_quantity(entry->max, &errstr);
+      if (errstr) { goto parse_error; }
+    }
+    if (errstr) {
+      parse_error:
+      zend_string_release(errstr);
+      sp_log_ini_check_violation("invalid INI value");
+      return simulation;
+    }
+    if ((entry->min && min > lvalue) ||
+        (entry->max && max < lvalue)) {
+      sp_log_ini_check_violation("%s", (entry->msg ? ZSTR_VAL(entry->msg) : "INI value out of range"));
+      return simulation;
+    }
+#else // PHP < 8.2
     zend_long lvalue = zend_atol(ZSTR_VAL(new_value), ZSTR_LEN(new_value));
     if ((entry->min && zend_atol(ZSTR_VAL(entry->min), ZSTR_LEN(entry->min)) > lvalue) ||
         (entry->max && zend_atol(ZSTR_VAL(entry->max), ZSTR_LEN(entry->max)) < lvalue)) {
       sp_log_ini_check_violation("%s", (entry->msg ? ZSTR_VAL(entry->msg) : "INI value out of range"));
       return simulation;
     }
+#endif
   }
 
   if (entry->regexp) {

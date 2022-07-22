@@ -465,14 +465,16 @@ int hook_regexp(const sp_pcre* regexp, HashTable* hook_table, zif_handler new_fu
 void unhook_functions(HashTable *ht) {
   zend_string *fname;
   zif_handler orig_handler;
-  zend_ulong idx;
 
-  ZEND_HASH_REVERSE_FOREACH_KEY_PTR(ht, idx, fname, orig_handler)
+#if PHP_VERSION_ID < 80200
+  ZEND_HASH_REVERSE_FOREACH_STR_KEY_PTR(ht, fname, orig_handler)
+#else // PHP >= 8.2
+  ZEND_HASH_MAP_REVERSE_FOREACH_STR_KEY_PTR(ht, fname, orig_handler)
+#endif
     zend_function *func = zend_hash_find_ptr(CG(function_table), fname);
     if (func && func->type == ZEND_INTERNAL_FUNCTION && orig_handler) {
       func->internal_function.handler = orig_handler;
     }
-    (void)idx;//silence a -Wunused-but-set-variable
   ZEND_HASH_FOREACH_END_DEL();
 }
 
