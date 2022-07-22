@@ -79,6 +79,12 @@ sp.disable_function.function("extract").param("array").value_r("^_").drop();
 sp.disable_function.function("extract").param("flags").value("0").drop();
 @end_condition;
 
+# parse_str() must be called with two arguments / prevent parent scope modification (this is the default for PHP >=8)
+@condition PHP_VERSION_ID < 80000;
+sp.disable_function.function("parse_str").pos("1").param_type("reference").allow();
+sp.disable_function.function("parse_str").drop().alias("parse_str() must be called with two arguments.");
+@end_condition;
+
 # Enable INI protection - see also ini_protection.rules
 sp.ini_protection.enable();
 
