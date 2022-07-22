@@ -24,7 +24,7 @@ static inline void sp_op_array_handler(zend_op_array *const op) {
   if (NULL == op->filename || op->fn_flags & ZEND_ACC_STRICT_TYPES) {
     return;
   } else {
-    if (SPCFG(global_strict).enable) {
+    if (SPCFG(global_strict)) {
       op->fn_flags |= ZEND_ACC_STRICT_TYPES;
     }
   }
@@ -361,14 +361,14 @@ static void dump_config() {
   add_assoc_bool(&arr, SP_TOKEN_UNSERIALIZE_HMAC "." SP_TOKEN_SIM, SPCFG(unserialize).simulation);
   ADD_ASSOC_ZSTR(&arr, SP_TOKEN_UNSERIALIZE_HMAC "." SP_TOKEN_DUMP, SPCFG(unserialize).dump);
 
-  add_assoc_bool(&arr, SP_TOKEN_HARDEN_RANDOM "." SP_TOKEN_ENABLE, SPCFG(random).enable);
+  add_assoc_bool(&arr, SP_TOKEN_HARDEN_RANDOM "." SP_TOKEN_ENABLE, SPCFG(random));
 
   add_assoc_bool(&arr, "readonly_exec.enable", SPCFG(readonly_exec).enable);
   add_assoc_bool(&arr, "readonly_exec.sim", SPCFG(readonly_exec).simulation);
   ADD_ASSOC_ZSTR(&arr, SP_TOKEN_READONLY_EXEC "." SP_TOKEN_DUMP, SPCFG(readonly_exec).dump);
   add_assoc_bool(&arr, "readonly_exec.extended_checks", SPCFG(readonly_exec).extended_checks);
 
-  add_assoc_bool(&arr, "global_strict.enable", SPCFG(global_strict).enable);
+  add_assoc_bool(&arr, "global_strict.enable", SPCFG(global_strict));
 
   add_assoc_bool(&arr, "upload_validation.enable", SPCFG(upload_validation).enable);
   add_assoc_bool(&arr, "upload_validation.sim", SPCFG(upload_validation).simulation);
@@ -383,8 +383,8 @@ static void dump_config() {
   add_assoc_bool(&arr, SP_TOKEN_GLOBAL "." SP_TOKEN_SERVER_STRIP, SPCFG(server_strip));
   add_assoc_bool(&arr, SP_TOKEN_GLOBAL "." SP_TOKEN_SHOW_OLD_PHP_WARNING, SPCFG(show_old_php_warning));
 
-  add_assoc_bool(&arr, SP_TOKEN_AUTO_COOKIE_SECURE, SPCFG(auto_cookie_secure).enable);
-  add_assoc_bool(&arr, SP_TOKEN_XXE_PROTECTION, SPCFG(xxe_protection).enable);
+  add_assoc_bool(&arr, SP_TOKEN_AUTO_COOKIE_SECURE, SPCFG(auto_cookie_secure));
+  add_assoc_bool(&arr, SP_TOKEN_XXE_PROTECTION, SPCFG(xxe_protection));
 
   add_assoc_bool(&arr, SP_TOKEN_EVAL_BLACKLIST "." SP_TOKEN_SIM, SPCFG(eval).simulation);
   ADD_ASSOC_ZSTR(&arr, SP_TOKEN_EVAL_BLACKLIST "." SP_TOKEN_DUMP, SPCFG(eval).dump);
@@ -404,7 +404,7 @@ static void dump_config() {
 
   add_assoc_long(&arr, SP_TOKEN_SESSION_ENCRYPTION "." SP_TOKEN_SID_MIN_LENGTH, SPCFG(session).sid_min_length);
   add_assoc_long(&arr, SP_TOKEN_SESSION_ENCRYPTION "." SP_TOKEN_SID_MAX_LENGTH, SPCFG(session).sid_max_length);
-  add_assoc_bool(&arr, SP_TOKEN_SLOPPY_COMPARISON "." SP_TOKEN_ENABLE, SPCFG(sloppy).enable);
+  add_assoc_bool(&arr, SP_TOKEN_SLOPPY_COMPARISON "." SP_TOKEN_ENABLE, SPCFG(sloppy));
 
   ADD_ASSOC_SPLIST(&arr, SP_TOKEN_ALLOW_WRAPPERS, SPCFG(wrapper).whitelist);
 
@@ -563,11 +563,11 @@ static PHP_INI_MH(OnUpdateConfiguration) {
 
   // start hooks
 
-  if (SPCFG(sloppy).enable) {
+  if (SPCFG(sloppy)) {
     hook_sloppy();
   }
 
-  if (SPCFG(random).enable) {
+  if (SPCFG(random)) {
     hook_rand();
   }
 
@@ -575,7 +575,7 @@ static PHP_INI_MH(OnUpdateConfiguration) {
     hook_upload();
   }
 
-  if (SPCFG(xxe_protection).enable) {
+  if (SPCFG(xxe_protection)) {
     hook_libxml_disable_entity_loader();
   }
 
@@ -602,7 +602,7 @@ static PHP_INI_MH(OnUpdateConfiguration) {
 
   sp_hook_register_server_variables();
 
-  if (SPCFG(global_strict).enable) {
+  if (SPCFG(global_strict)) {
     if (!zend_get_extension(PHP_SNUFFLEUPAGUS_EXTNAME)) {
       zend_extension_entry.startup = NULL;
       zend_register_extension(&zend_extension_entry, NULL);

@@ -133,7 +133,7 @@ PHP_FUNCTION(sp_setcookie) {
   }
 
   /* If the request was issued over HTTPS, the cookie should be "secure" */
-  if (SPCFG(auto_cookie_secure).enable) {
+  if (SPCFG(auto_cookie_secure)) {
     const zval server_vars = PG(http_globals)[TRACK_VARS_SERVER];
     if (Z_TYPE(server_vars) == IS_ARRAY) {
       const zval *is_https =

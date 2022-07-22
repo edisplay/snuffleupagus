@@ -41,26 +41,6 @@ typedef struct {
 } sp_config_readonly_exec;
 
 typedef struct {
-  bool enable;
-} sp_config_global_strict;
-
-typedef struct {
-  bool enable;
-} sp_config_random;
-
-typedef struct {
-  bool enable;
-} sp_config_sloppy;
-
-typedef struct {
-  bool enable;
-} sp_config_auto_cookie_secure;
-
-typedef struct {
-  bool enable;
-} sp_config_xxe_protection;
-
-typedef struct {
   enum samesite_type { strict = 1, lax = 2 } samesite;
   bool encrypt;
   zend_string *name;
