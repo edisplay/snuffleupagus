@@ -35,6 +35,11 @@ sp.xxe_protection.enable();
 # https://snuffleupagus.readthedocs.io/features.html#protection-against-cross-site-request-forgery
 sp.cookie.name("PHPSESSID").samesite("lax");
 
+# Enforce strict sessions in order to prevent weak session IDs and session fixation
+@condition extension_loaded("session");
+sp.ini.key("session.use_strict_mode").set("1").ro();
+@end_condition;
+
 # Detect and drop cross-site POST-requests, if the Sec-Fetch-Site request header is not same-origin
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Site
 sp.sec_fetch_check.enable();
