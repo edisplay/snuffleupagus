@@ -195,6 +195,26 @@ static PHP_GSHUTDOWN_FUNCTION(snuffleupagus) {
 #endif
 }
 
+static void sp_sec_fetch_check() {
+  if (!SG(request_info).request_method) { return; }
+  if (strncmp(SG(request_info).request_method, VAR_AND_LEN("POST")) != 0) { return; }
+
+  if (Z_TYPE(PG(http_globals)[TRACK_VARS_SERVER]) == IS_ARRAY || zend_is_auto_global_str(ZEND_STRL("_SERVER"))) {
+    zval *http_sec_fetch_site = zend_hash_str_find(Z_ARRVAL_P(&PG(http_globals)[TRACK_VARS_SERVER]), ZEND_STRL("HTTP_SEC_FETCH_SITE"));
+    if (!http_sec_fetch_site || Z_TYPE_P(http_sec_fetch_site) != IS_STRING) { return; }
+
+    if (!sp_zend_string_equals_str(Z_STR_P(http_sec_fetch_site), VAR_AND_LEN("same-origin"))) {
+      sapi_header_line ctr = {0};
+      ctr.response_code = 403;
+      ctr.line_len = sizeof("HTTP/1.0 403 Access Denied")-1;
+      ctr.line = "HTTP/1.0 403 Access Denied";
+      sapi_header_op(SAPI_HEADER_REPLACE, &ctr);
+      sapi_send_headers();
+      sp_log_drop("sec_fetch_check", "cross-site POST request detected");
+    }
+  }
+}
+
 PHP_RINIT_FUNCTION(snuffleupagus) {
   SPG(execution_depth) = 0;
   SPG(in_eval) = 0;
@@ -223,6 +243,11 @@ PHP_RINIT_FUNCTION(snuffleupagus) {
       zend_hash_apply_with_arguments(Z_ARRVAL(PG(http_globals)[TRACK_VARS_COOKIE]), decrypt_cookie, 0);
     }
   }
+
+  if (SPCFG(sec_fetch_check)) {
+    sp_sec_fetch_check();
+  }
+
   return SUCCESS;
 }
 

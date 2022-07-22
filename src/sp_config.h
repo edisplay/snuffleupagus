@@ -210,6 +210,7 @@ typedef struct {
 #define SP_TOKEN_ALLOW_WRAPPERS "wrappers_whitelist"
 #define SP_TOKEN_INI_PROTECTION "ini_protection"
 #define SP_TOKEN_INI "ini"
+#define SP_TOKEN_SEC_FETCH_CHECK "sec_fetch_check"
 
 // common tokens
 #define SP_TOKEN_ENABLE "enable"

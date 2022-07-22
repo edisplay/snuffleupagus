@@ -35,6 +35,10 @@ sp.xxe_protection.enable();
 # https://snuffleupagus.readthedocs.io/features.html#protection-against-cross-site-request-forgery
 sp.cookie.name("PHPSESSID").samesite("lax");
 
+# Detect and drop cross-site POST-requests, if the Sec-Fetch-Site request header is not same-origin
+# https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Site
+sp.sec_fetch_check.enable();
+
 # Harden the `chmod` function (0777 (oct = 511, 0666 = 438)
 sp.disable_function.function("chmod").param("mode").value("438").drop();
 sp.disable_function.function("chmod").param("mode").value("511").drop();

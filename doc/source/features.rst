@@ -424,6 +424,9 @@ Snuffleupagus can prevent this (in `supported browsers <https://caniuse.com/#sea
 by setting the `samesite <https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-02#section-5.3.7>`__
 attribute on cookies.
 
+In addition Snuffleupagus can detect and drop cross-site POST requests by checking the 
+`Sec-Fetch-Site <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Sec-Fetch-Site>`__ request 
+header. This header is sent by all modern browsers.
 
 Dumping capabilities
 ^^^^^^^^^^^^^^^^^^^^

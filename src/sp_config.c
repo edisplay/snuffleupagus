@@ -23,6 +23,7 @@ static const sp_config_keyword sp_func[] = {
     {parse_wrapper_whitelist,   SP_TOKEN_ALLOW_WRAPPERS, &(SPCFG(wrapper))},
     {parse_ini_protection,      SP_TOKEN_INI_PROTECTION, &(SPCFG(ini))},
     {parse_ini_entry,           SP_TOKEN_INI, NULL},
+    {parse_enable,              SP_TOKEN_SEC_FETCH_CHECK, &(SPCFG(sec_fetch_check))},
     {NULL, NULL, NULL}
 };
 

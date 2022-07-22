@@ -344,7 +344,7 @@ It can either be ``enabled`` or ``disabled`` and can be used in ``simulation`` m
 
 
 xxe_protection
-^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 :ref:`xxe_protection <xxe-feature>`, disabled by default, will prevent XXE attacks by disabling the loading of external entities (``libxml_disable_entity_loader``) in the XML parser.
 
@@ -353,6 +353,14 @@ xxe_protection
   sp.xxe_protection.enable();
   sp.xxe_protection.disable();
 
+CSRF protection via Sec-Fetch request headers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+By enabling the feature, all coss-site POST requests are dropped with HTTP response code 403 (access denied). The check is performed by enforcing ``Sec-Fetch-Site`` to be ``same-origin`` for all POST requests.
+
+::
+  sp.sec_fetch_check.enable();
+  sp.sec_fetch_check.disable();
 
 Whitelist of stream-wrappers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
