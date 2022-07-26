@@ -94,7 +94,7 @@ sp.ini_protection.enable();
 sp.ini.key("open_basedir").drop();
 
 # Prevent runtime modification of interesting things
-sp.ini.key("assert.active").ro();
+sp.ini.key("assert.active").set("0").ro();
 sp.ini.key("zend.assertions").ro();
 sp.ini.key("memory_limit").ro();
 sp.ini.key("include_path").ro();
